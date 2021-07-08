@@ -1,24 +1,24 @@
 package com.example.demo.models;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "fruits")
 public class Fruit {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
 
     public Fruit() { }
 
-    public Fruit(int id, String name) {
-        this.id = id;
+    public Fruit(String name) {
         this.name = name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {

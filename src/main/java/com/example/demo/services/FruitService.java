@@ -10,28 +10,24 @@ import java.util.Optional;
 public class FruitService {
     private ArrayList<Fruit> fruits = new ArrayList<>();
 
-    private int generateId() {
-     return fruits.size() + 1;
-    }
-
     public ArrayList<Fruit> getFruits() {
         return fruits;
     }
 
     public Fruit addFruit(String name) {
-        Fruit newFruit = new Fruit(generateId(), name);
+        Fruit newFruit = new Fruit(name);
         fruits.add(newFruit);
         return newFruit;
     }
 
-    public void deleteFruit(int id) {
+    public void deleteFruit(Long id) {
        Optional<Fruit> fruit = fruits.stream().filter(f -> f.getId() == id).findFirst();
         fruit.ifPresent(value -> fruits.remove(value));
     }
 
-    public Fruit updateFruit(int id, String newName) {
+    public Optional<Fruit> updateFruit(Long id, String newName) {
         Optional<Fruit> fruit = fruits.stream().filter(f -> f.getId() == id).findFirst();
         fruit.ifPresent(value -> value.setName(newName));
-        return fruit.get();
+        return fruit;
     }
 }
