@@ -11,7 +11,10 @@ import java.util.Optional;
 // Need to specify entity type, id type
 public interface FruitRepository extends JpaRepository<Fruit, Long> {
     List<Fruit> findAll();
+
     Optional<Fruit> findById(Long id);
+
     List<Fruit> findByName(String name);
-    // List<Fruit> findByInSeason(Boolean inSeason)
+
+    List<Fruit> findByInSeason(Boolean inSeason);
 }
