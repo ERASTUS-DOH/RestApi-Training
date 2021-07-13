@@ -16,13 +16,7 @@ import java.util.Optional;
 public class FruitController {
 
     @Autowired
-    // implicit dependency injection
     private FruitRepository fruitRepository;
-
-    /* private final FruitRepository fruitRepository;
-     FruitController(FruitRepository fruitRepository) {
-        this.fruitRepository = fruitRepository;
-    */
 
     @GetMapping("fruits")
     public ResponseEntity<List<Fruit>> getFruits(@RequestParam(required = false) String name) {
@@ -41,14 +35,13 @@ public class FruitController {
         catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        // finally - clean up (eg. closing resources)
     }
 
     @GetMapping("fruits/{id}")
-    public ResponseEntity<Fruit> getFruitById(@PathVariable("id") long id){
+    public ResponseEntity<Fruit> getFruitById(@PathVariable("id") long id) {
         Optional<Fruit> fruit = fruitRepository.findById(id);
 
-        if (fruit.isPresent()){
+        if (fruit.isPresent()) {
             return new ResponseEntity<>(fruit.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -57,6 +50,10 @@ public class FruitController {
 
     @PostMapping("fruits")
     public ResponseEntity<Fruit> storeFruit(@RequestBody Fruit fruit) {
+        /* Look into potentially throwing your own exceptions!
+        if (clientRepository.findByEmail(client.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User already exist with email");
+        }*/
         try {
             Fruit _fruit = fruitRepository.save(new Fruit(fruit.getName()));
             return new ResponseEntity<>(_fruit, HttpStatus.CREATED);
@@ -66,39 +63,43 @@ public class FruitController {
     }
 
     @DeleteMapping("fruits/{id}")
-    public void deleteFruit(@PathVariable("id") Long id){
-        try {
+    public ResponseEntity<String> deleteFruit(@PathVariable("id") Long id) {
+        Optional<Fruit> fruit = fruitRepository.findById(id);
 
-        } catch (Exception e) {
-
+        if (fruit.isPresent()) {
+            fruitRepository.deleteById(id);
+            return new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
         }
+        return new ResponseEntity<>("No such id", HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("fruits")
-    public void deleteAllFruits(@PathVariable("id") Long id){
-        try {
-
-        } catch (Exception e) {
-
-        }
+    public ResponseEntity<String> deleteAllFruits(@PathVariable("id") Long id) {
+        fruitRepository.deleteAll();
+        return new ResponseEntity<>("All fruits deleted", HttpStatus.OK);
     }
 
     @PatchMapping("fruits/{id}")
-    public void updateFruit(@PathVariable("id") Long id, @RequestBody Fruit newFruit) {
+    public ResponseEntity<Fruit> updateFruit(@PathVariable("id") Long id, @RequestBody Fruit newFruit) {
+        // Option 1. presence check - update if found, else return not found response
         Optional<Fruit> fruit = fruitRepository.findById(id);
 
-        // Two ways
-        // 1. presence check - update if found, else return not found response
-        // 2. map through to update, create if not found
+        // this requires all data to be entered - you can do more granular checks
+        if (fruit.isPresent()){
+            fruit.get().setName(newFruit.getName());
+            fruit.get().setIsInSeason(newFruit.getInSeason());
+            return new ResponseEntity<>(fruitRepository.save(fruit.get()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Option 2. using map, create if not found
     }
 
     @GetMapping("fruits/inSeason")
-    public void findByInSeason() {
-        try {
-
-        } catch (Exception e) {
-
-        }
+    public ResponseEntity<List<Fruit>> findByInSeason() {
+        ArrayList<Fruit> fruitsInSeason = new ArrayList<>();
+        return new ResponseEntity<>(fruitRepository.findByInSeason(true), HttpStatus.OK);
     }
 
 }
