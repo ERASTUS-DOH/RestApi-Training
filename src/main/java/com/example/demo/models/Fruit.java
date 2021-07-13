@@ -13,6 +13,8 @@ public class Fruit {
     @Column(name = "name")
     private String name;
 
+    private Boolean inSeason;
+
     public Fruit() { }
 
     public Fruit(String name) {
@@ -27,10 +29,13 @@ public class Fruit {
         return name;
     }
 
+    public Boolean getInSeason() { return inSeason; }
+
     public void setName(String name) {
         this.name = name;
     }
 
+    public void setIsInSeason(Boolean isInSeason) { this.inSeason = isInSeason; }
     @Override
     public String toString() {
         return "Fruit{" +
