@@ -36,6 +36,7 @@ public class Fruit {
     }
 
     public void setIsInSeason(Boolean isInSeason) { this.inSeason = isInSeason; }
+
     @Override
     public String toString() {
         return "Fruit{" +
