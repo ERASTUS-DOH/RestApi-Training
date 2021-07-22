@@ -10,4 +10,9 @@ public class Calc {
         return num.doubleValue() / den.doubleValue();
     }
 
+    // --- work on deployment
+    // -- authors, books -
+    //-name, location, email
+    // - name, number of pages, published date, author id
+
 }
